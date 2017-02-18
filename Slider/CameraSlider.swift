@@ -42,7 +42,7 @@ class CameraSlider: UISlider {
     private func getThumbView() {
         setThumbImage(UIImage(named: "Circle"), for: .normal)
         guard let thumbImageView = subviews.last as? UIImageView else { return }
-        thumbImageView.tintColor = .yellow    
+        thumbImageView.tintColor = .yellow
     }
     
     private func setupTrackSettings() {
