@@ -70,9 +70,9 @@ class CameraSlider: UISlider {
         let maximumGradient = CAGradientLayer()
         let maximumFrame = CGRect(x: 0, y: 0, width: bounds.width / 2, height: 5.0)
         maximumGradient.frame = maximumFrame
-        maximumGradient.colors = [UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.yellow.cgColor, UIColor.yellow.cgColor]
+        maximumGradient.colors = [UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.yellow.cgColor, UIColor.yellow.cgColor]
         maximumGradient.startPoint = CGPoint(x: 1.79, y:  1)
-        maximumGradient.endPoint = CGPoint(x: 0, y:  1)
+        maximumGradient.endPoint = CGPoint(x: 1, y:  1)
         maximumGradient.locations =  [0, 0.5, 0.5, 1.0]
         
         UIGraphicsBeginImageContextWithOptions(maximumGradient.frame.size, false, 0)
