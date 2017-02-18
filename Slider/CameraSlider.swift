@@ -43,11 +43,43 @@ class CameraSlider: UISlider {
         setThumbImage(UIImage(named: "Circle"), for: .normal)
         guard let thumbImageView = subviews.last as? UIImageView else { return }
         thumbImageView.tintColor = .yellow
+        debugPrint(thumbImageView.frame)
     }
     
     private func setupTrackSettings() {
         minimumTrackTintColor = .gray
         maximumTrackTintColor = .green
+        
+        
+        let minumumGradient = CAGradientLayer()
+        let frame = CGRect(x: 0, y: 0, width: bounds.width / 2, height: 5.0 )
+        minumumGradient.frame = frame
+        minumumGradient.colors = [UIColor.yellow.cgColor, UIColor.yellow.cgColor, UIColor.clear.cgColor, UIColor.clear.cgColor]
+        minumumGradient.startPoint = CGPoint(x: 0, y:  1)
+        minumumGradient.endPoint = CGPoint(x: 1.79, y:  1)
+        minumumGradient.locations =  [0, 0.5, 0.5, 1.0]
+        
+        UIGraphicsBeginImageContextWithOptions(minumumGradient.frame.size, false, 0)
+        minumumGradient.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        setMinimumTrackImage(image?.resizableImage(withCapInsets:.zero),  for: .normal)
+        
+        
+        
+        let maximumGradient = CAGradientLayer()
+        let maximumFrame = CGRect(x: 0, y: 0, width: bounds.width / 2, height: 5.0)
+        maximumGradient.frame = maximumFrame
+        maximumGradient.colors = [UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.yellow.cgColor, UIColor.yellow.cgColor]
+        maximumGradient.startPoint = CGPoint(x: 1.79, y:  1)
+        maximumGradient.endPoint = CGPoint(x: 0, y:  1)
+        maximumGradient.locations =  [0, 0.5, 0.5, 1.0]
+        
+        UIGraphicsBeginImageContextWithOptions(maximumGradient.frame.size, false, 0)
+        maximumGradient.render(in: UIGraphicsGetCurrentContext()!)
+        let maximumImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        setMaximumTrackImage(maximumImage?.resizableImage(withCapInsets:.zero),  for: .normal)
     }
     
     
@@ -55,13 +87,15 @@ class CameraSlider: UISlider {
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         super.beginTracking(touch, with: event)
-        
+        guard let thumbImageView = subviews.last as? UIImageView else { return true }
+        debugPrint(thumbImageView.frame)
         return true
     }
     
     override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         super.continueTracking(touch, with: event)
-        
+        guard let thumbImageView = subviews.last as? UIImageView else { return true }
+        debugPrint(thumbImageView.frame)
         
         
         return true
