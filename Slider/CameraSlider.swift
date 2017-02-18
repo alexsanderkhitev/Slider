@@ -46,27 +46,7 @@ class CameraSlider: UISlider {
     private func setupTrackSettings() {
         minimumTrackTintColor = .gray
         maximumTrackTintColor = .gray
-        
-        // 
-        
-        let gradient = CAGradientLayer()
-        gradient.colors = [UIColor.red]
-        gradient.startPoint = CGPoint(x: 0, y: 0)
-        gradient.endPoint = CGPoint(x: 20, y: 0)
-        
-        
-        var i = 0
-        
-        for subview in subviews {
-            debugPrint("subview", subview)
-            if i == 0 {
-            
-                gradient.frame = subview.bounds
-              subview.layer.addSublayer(gradient)
-            }
-            i += 1
-        }
-        
+    
     }
     
 }
