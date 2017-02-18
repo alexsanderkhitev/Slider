@@ -35,18 +35,43 @@ class CameraSlider: UISlider {
         return CGRect(origin: bounds.origin, size: CGSize(width: bounds.width, height: 5))
     }
     
+
+    
     // MARK: - UI 
     
     private func getThumbView() {
         setThumbImage(UIImage(named: "Circle"), for: .normal)
         guard let thumbImageView = subviews.last as? UIImageView else { return }
-        thumbImageView.tintColor = .yellow
+        thumbImageView.tintColor = .yellow    
     }
     
     private func setupTrackSettings() {
         minimumTrackTintColor = .gray
-        maximumTrackTintColor = .gray
-    
+        maximumTrackTintColor = .green
     }
+    
+    
+    // MARK: - override functions 
+    
+    override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        super.beginTracking(touch, with: event)
+        
+        return true
+    }
+    
+    override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        super.continueTracking(touch, with: event)
+        
+        
+        
+        return true
+    }
+    
+    
+    override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
+        super.endTracking(touch, with: event)
+        
+    }
+    
     
 }
