@@ -15,14 +15,15 @@ class CameraSlider: UIControl {
     // MARK: - Position's values
     fileprivate let thumbSizeValue: CGFloat = 20
     fileprivate let thumbY: CGFloat = 7.5
-    fileprivate let minumTrackView = TrackView(frame: .zero)
-    fileprivate let maximumTrackView = TrackView(frame: .zero)
     fileprivate let trackY: CGFloat = 7.5 + 5
 
+    fileprivate let trackHeight: CGFloat = 10
     
     // MARK: - UI Elements
     
     fileprivate let thumb = ThumbView(frame: .zero)//UIView(frame: .zero)
+    fileprivate let minumTrackView = TrackView(frame: .zero)
+    fileprivate let maximumTrackView = TrackView(frame: .zero)
     
     // MARK: - lifecycle 
     
@@ -41,9 +42,12 @@ class CameraSlider: UIControl {
         thumb.frame = CGRect(x: thumbX, y: thumbY, width: thumbSizeValue, height: thumbSizeValue)
         addSubview(thumb)
         
+        thumb.layer.zPosition = 1
         
-        minumTrackView.frame = CGRect(x: 0, y: trackY, width: thumbX, height: 10)
+        minumTrackView.frame = CGRect(x: 0, y: trackY, width: thumbX, height: trackHeight)
         minumTrackView.backgroundColor = .gray
+        
+        minumTrackView.layer.zPosition = 0
         
         addSubview(minumTrackView)
     }
@@ -92,6 +96,17 @@ class CameraSlider: UIControl {
             guard self != nil else { return }
             if point.x > 0 && point.x < self!.frame.width - self!.thumbSizeValue {
                 self!.thumb.frame.origin = CGPoint(x: point.x, y: self!.thumbY)
+                
+                // frame 
+                
+                self!.minumTrackView.frame.size = CGSize(width: point.x, height:self!.trackHeight)
+            } else if point.x < 0 {
+                let X: CGFloat = 0
+                self!.thumb.frame.origin = CGPoint(x: X, y: self!.thumbY)
+                
+                // frame
+                
+                self!.minumTrackView.frame.size = CGSize(width: X, height: self!.trackHeight)
             }
         }) { (completion) in
             
