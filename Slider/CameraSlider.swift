@@ -19,6 +19,8 @@ class CameraSlider: UIControl {
 
     fileprivate let trackHeight: CGFloat = 10
     
+    fileprivate let underThumbValue: CGFloat = 2
+    
     // MARK: - UI Elements
     
     fileprivate let thumb = ThumbView(frame: .zero)//UIView(frame: .zero)
@@ -45,19 +47,26 @@ class CameraSlider: UIControl {
         
         thumb.layer.zPosition = 1
         
-        minumTrackView.frame = CGRect(x: 0, y: trackY, width: thumbX, height: trackHeight)
+        /// width + 1 because it will be under thumb
+        minumTrackView.frame = CGRect(x: 0, y: trackY, width: thumbX + underThumbValue, height: trackHeight)
         minumTrackView.backgroundColor = .gray
         
         minumTrackView.layer.zPosition = 0
         
         addSubview(minumTrackView)
         
-        
         maximumTrackView.layer.zPosition = 0
-        maximumTrackView.frame = CGRect(x: thumbX + thumbSizeValue, y: trackY, width: thumbX, height: trackHeight)
+        maximumTrackView.frame = CGRect(x: thumbX + thumbSizeValue - underThumbValue, y: trackY, width: thumbX, height: trackHeight)
         maximumTrackView.backgroundColor = .gray
         
         addSubview(maximumTrackView)
+        
+        // corner
+//        minumTrackView.roundCorners(corners: [.bottomLeft, .topLeft], radius: 5) // trackHeight / 2 = 5
+//        maximumTrackView.roundCorners(corners: [.topRight, .bottomRight], radius: 5)
+//        
+//        minumTrackView.layer.masksToBounds = true
+//        maximumTrackView.layer.masksToBounds = true
     }
     
     private func setupViewsSettings() {
@@ -65,7 +74,7 @@ class CameraSlider: UIControl {
         thumb.isUserInteractionEnabled = true
         thumb.layer.cornerRadius = thumbSizeValue / 2
         thumb.layer.masksToBounds = true
-        thumb.layer.borderColor = UIColor.black.cgColor
+        thumb.layer.borderColor = UIColor.yellow.cgColor
         thumb.layer.borderWidth = 2
     }
     
@@ -107,13 +116,12 @@ class CameraSlider: UIControl {
                 
                 // frame 
                 
-                self!.minumTrackView.frame.size = CGSize(width: point.x, height:self!.trackHeight)
+                self!.minumTrackView.frame.size = CGSize(width: point.x + self!.underThumbValue, height:self!.trackHeight)
                 
-//                maximumTrackView.frame = CGRect(x: thumbX + thumbSizeValue, y: trackY, width: thumbX, height: trackHeight)
-
                 let maxWidth = self!.frame.width - point.x + self!.thumbSizeValue - 42.5
-                debugPrint("maxWidth", maxWidth)
-                self!.maximumTrackView.frame = CGRect(x: point.x + self!.thumbSizeValue, y: self!.trackY, width: maxWidth, height: self!.trackHeight)
+                
+                // TODO: - need to find 42.5
+                self!.maximumTrackView.frame = CGRect(x: point.x + self!.thumbSizeValue - self!.underThumbValue, y: self!.trackY, width: maxWidth, height: self!.trackHeight)
             } else if point.x < 0 {
                 let X: CGFloat = 0
                 self!.thumb.frame.origin = CGPoint(x: X, y: self!.thumbY)
@@ -123,7 +131,7 @@ class CameraSlider: UIControl {
                 self!.minumTrackView.frame.size = CGSize(width: X, height: self!.trackHeight)
                 
                 let maxWidth = self!.frame.width - point.x + self!.thumbSizeValue - 42.5
-                self!.maximumTrackView.frame = CGRect(x: X + self!.thumbSizeValue, y: self!.trackY, width: maxWidth, height: self!.trackHeight)
+                self!.maximumTrackView.frame = CGRect(x: X + self!.thumbSizeValue - self!.underThumbValue, y: self!.trackY, width: maxWidth, height: self!.trackHeight)
             }
         }) { (completion) in
             
@@ -144,6 +152,17 @@ fileprivate class TrackView: UIView {
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         return false
+    }
+    
+}
+
+extension UIView {
+    
+    func roundCorners(corners: UIRectCorner, radius: CGFloat) {
+        let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        self.layer.mask = mask
     }
     
 }

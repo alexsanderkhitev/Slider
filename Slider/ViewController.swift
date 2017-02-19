@@ -37,7 +37,7 @@ class ViewController: UIViewController {
         cameraSlider.heightAnchor.constraint(equalToConstant: 35).isActive = true
         
         
-        cameraSlider.backgroundColor = .red
+//        cameraSlider.backgroundColor = .red
         cameraSlider.isUserInteractionEnabled = true
     }
     
