@@ -20,16 +20,13 @@ class ViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         setupUIElementsPositions()
-        view.backgroundColor = .black
+        view.backgroundColor = .white
     }
     
     private func addUISlider() {
         cameraSlider.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(cameraSlider)
-        cameraSlider.minimumValue = 1
-        cameraSlider.maximumValue = 5
-        cameraSlider.value = 3
-        cameraSlider.isContinuous = true
+
     }
 
 
@@ -37,6 +34,11 @@ class ViewController: UIViewController {
         cameraSlider.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         cameraSlider.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         cameraSlider.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1, constant: -16).isActive = true
+        cameraSlider.heightAnchor.constraint(equalToConstant: 5).isActive = true
+        
+        
+        cameraSlider.backgroundColor = .red
+        cameraSlider.isUserInteractionEnabled = true
     }
     
 }

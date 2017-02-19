@@ -8,104 +8,74 @@
 
 import UIKit
 
-class CameraSlider: UISlider {
+class CameraSlider: UIControl {
     
-    // MARK: - Flags
+    fileprivate let thumb = UIView(frame: .zero)
     
-    private var isSettingsSetup = false
-
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
+    // MARK: - lifecycle 
     
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+        addUIElements()
+        setupViewsSettings()
     }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        if !isSettingsSetup {
-            getThumbView()
-            setupTrackSettings()
-            isSettingsSetup = true
-        }
-    }
-  
-    // MARK: - Property
-    
-    override func trackRect(forBounds bounds: CGRect) -> CGRect {
-        super.trackRect(forBounds: bounds)
-        return CGRect(origin: bounds.origin, size: CGSize(width: bounds.width, height: 5))
-    }
-    
-
     
     // MARK: - UI 
     
-    private func getThumbView() {
-        setThumbImage(UIImage(named: "Circle"), for: .normal)
-        guard let thumbImageView = subviews.last as? UIImageView else { return }
-        thumbImageView.tintColor = .yellow
-        debugPrint(thumbImageView.frame)
+    private func addUIElements() {
+        let mainScreenBounds = UIScreen.main.bounds
+        thumb.frame = CGRect(x: mainScreenBounds.width / 2 - 18, y: -15.5, width: 36, height: 36)
+        addSubview(thumb)
     }
     
-    private func setupTrackSettings() {
-        minimumTrackTintColor = .gray
-        maximumTrackTintColor = .green
-        
-        
-        let minumumGradient = CAGradientLayer()
-        let frame = CGRect(x: 0, y: 0, width: bounds.width / 2, height: 5.0 )
-        minumumGradient.frame = frame
-        minumumGradient.colors = [UIColor.yellow.cgColor, UIColor.yellow.cgColor, UIColor.clear.cgColor, UIColor.clear.cgColor]
-        minumumGradient.startPoint = CGPoint(x: 0, y:  1)
-        minumumGradient.endPoint = CGPoint(x: 1.79, y:  1)
-        minumumGradient.locations =  [0, 0.5, 0.5, 1.0]
-        
-        UIGraphicsBeginImageContextWithOptions(minumumGradient.frame.size, false, 0)
-        minumumGradient.render(in: UIGraphicsGetCurrentContext()!)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        setMinimumTrackImage(image?.resizableImage(withCapInsets:.zero),  for: .normal)
-        
-        
-        
-        let maximumGradient = CAGradientLayer()
-        let maximumFrame = CGRect(x: 0, y: 0, width: bounds.width / 2, height: 5.0)
-        maximumGradient.frame = maximumFrame
-        maximumGradient.colors = [UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.yellow.cgColor, UIColor.yellow.cgColor]
-        maximumGradient.startPoint = CGPoint(x: 1.79, y:  1)
-        maximumGradient.endPoint = CGPoint(x: 1, y:  1)
-        maximumGradient.locations =  [0, 0.5, 0.5, 1.0]
-        
-        UIGraphicsBeginImageContextWithOptions(maximumGradient.frame.size, false, 0)
-        maximumGradient.render(in: UIGraphicsGetCurrentContext()!)
-        let maximumImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        setMaximumTrackImage(maximumImage?.resizableImage(withCapInsets:.zero),  for: .normal)
+    private func setupViewsSettings() {
+        thumb.backgroundColor = .clear
+        thumb.isUserInteractionEnabled = true
+        thumb.layer.cornerRadius = 36 / 2
+        thumb.layer.masksToBounds = true
+        thumb.layer.borderColor = UIColor.black.cgColor
+        thumb.layer.borderWidth = 2
     }
     
-    
-    // MARK: - override functions 
+    // MARK: - Delegates
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         super.beginTracking(touch, with: event)
-        guard let thumbImageView = subviews.last as? UIImageView else { return true }
-        debugPrint(thumbImageView.frame)
+        animation(touch)
+
         return true
     }
     
     override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         super.continueTracking(touch, with: event)
-        guard let thumbImageView = subviews.last as? UIImageView else { return true }
-        debugPrint(thumbImageView.frame)
         
+        let point = touch.location(in: self)
+        debugPrint("touch", point)
+        animation(touch)
         
         return true
     }
     
-    
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
         super.endTracking(touch, with: event)
         
+        guard touch != nil else { return }
+        animation(touch!)
     }
     
+    // MARK: - Animation
+    
+    private func animation(_ touch: UITouch) {
+        let point = touch.location(in: self)
+        
+        UIView.animate(withDuration: 0.1, animations: { [weak self] in
+            guard self != nil else { return }
+            if point.x > 0 && point.x < self!.frame.width {
+                self!.thumb.frame.origin = CGPoint(x: point.x, y: -15.5)
+            }
+        }) { (completion) in
+            
+        }
+    }
     
 }
