@@ -33,7 +33,7 @@ class ViewController: UIViewController {
     private func setupUIElementsPositions() {
         cameraSlider.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         cameraSlider.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        cameraSlider.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1, constant: -16).isActive = true
+        cameraSlider.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1, constant: -30).isActive = true
         cameraSlider.heightAnchor.constraint(equalToConstant: 35).isActive = true
         
         

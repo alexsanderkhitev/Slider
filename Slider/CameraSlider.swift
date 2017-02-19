@@ -38,7 +38,8 @@ class CameraSlider: UIControl {
     private func addUIElements() {
         let mainScreenBounds = UIScreen.main.bounds
         
-        let thumbX = mainScreenBounds.width / 2 - thumbSizeValue / 2
+        // MARK: - warning minus value from main screen width
+        let thumbX = (mainScreenBounds.width - 30) / 2 - thumbSizeValue / 2
         thumb.frame = CGRect(x: thumbX, y: thumbY, width: thumbSizeValue, height: thumbSizeValue)
         addSubview(thumb)
         
@@ -50,6 +51,13 @@ class CameraSlider: UIControl {
         minumTrackView.layer.zPosition = 0
         
         addSubview(minumTrackView)
+        
+        
+        maximumTrackView.layer.zPosition = 0
+        maximumTrackView.frame = CGRect(x: thumbX + thumbSizeValue, y: trackY, width: thumbX, height: trackHeight)
+        maximumTrackView.backgroundColor = .gray
+        
+        addSubview(maximumTrackView)
     }
     
     private func setupViewsSettings() {
@@ -100,6 +108,12 @@ class CameraSlider: UIControl {
                 // frame 
                 
                 self!.minumTrackView.frame.size = CGSize(width: point.x, height:self!.trackHeight)
+                
+//                maximumTrackView.frame = CGRect(x: thumbX + thumbSizeValue, y: trackY, width: thumbX, height: trackHeight)
+
+                let maxWidth = self!.frame.width - point.x + self!.thumbSizeValue - 42.5
+                debugPrint("maxWidth", maxWidth)
+                self!.maximumTrackView.frame = CGRect(x: point.x + self!.thumbSizeValue, y: self!.trackY, width: maxWidth, height: self!.trackHeight)
             } else if point.x < 0 {
                 let X: CGFloat = 0
                 self!.thumb.frame.origin = CGPoint(x: X, y: self!.thumbY)
@@ -107,6 +121,9 @@ class CameraSlider: UIControl {
                 // frame
                 
                 self!.minumTrackView.frame.size = CGSize(width: X, height: self!.trackHeight)
+                
+                let maxWidth = self!.frame.width - point.x + self!.thumbSizeValue - 42.5
+                self!.maximumTrackView.frame = CGRect(x: X + self!.thumbSizeValue, y: self!.trackY, width: maxWidth, height: self!.trackHeight)
             }
         }) { (completion) in
             
