@@ -91,7 +91,6 @@ class CameraSlider: UIControl {
         super.continueTracking(touch, with: event)
         
         let point = touch.location(in: self)
-        debugPrint("touch", point)
         animation(touch)
         
         return true
@@ -99,7 +98,6 @@ class CameraSlider: UIControl {
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
         super.endTracking(touch, with: event)
-        
         guard touch != nil else { return }
         animation(touch!)
     }
@@ -122,6 +120,12 @@ class CameraSlider: UIControl {
                 
                 // TODO: - need to find 42.5
                 self!.maximumTrackView.frame = CGRect(x: point.x + self!.thumbSizeValue - self!.underThumbValue, y: self!.trackY, width: maxWidth, height: self!.trackHeight)
+                
+                
+                if point.x + self!.thumbSizeValue + CGFloat(2) == self!.frame.width {
+                    debugPrint("here")
+                }
+                
             } else if point.x < 0 {
                 let X: CGFloat = 0
                 self!.thumb.frame.origin = CGPoint(x: X, y: self!.thumbY)
