@@ -10,6 +10,14 @@ import UIKit
 
 class CameraSlider: UIControl {
     
+    // 35 height
+    
+    // MARK: - Position's values
+    fileprivate let thumbSizeValue: CGFloat = 20
+    fileprivate let thumbY: CGFloat = 7.5
+    
+    // MARK: - UI Elements
+    
     fileprivate let thumb = UIView(frame: .zero)
     
     // MARK: - lifecycle 
@@ -24,14 +32,14 @@ class CameraSlider: UIControl {
     
     private func addUIElements() {
         let mainScreenBounds = UIScreen.main.bounds
-        thumb.frame = CGRect(x: mainScreenBounds.width / 2 - 18, y: -15.5, width: 36, height: 36)
+        thumb.frame = CGRect(x: mainScreenBounds.width / 2 - 18, y: thumbY, width: thumbSizeValue, height: thumbSizeValue)
         addSubview(thumb)
     }
     
     private func setupViewsSettings() {
         thumb.backgroundColor = .clear
         thumb.isUserInteractionEnabled = true
-        thumb.layer.cornerRadius = 36 / 2
+        thumb.layer.cornerRadius = thumbSizeValue / 2
         thumb.layer.masksToBounds = true
         thumb.layer.borderColor = UIColor.black.cgColor
         thumb.layer.borderWidth = 2
@@ -70,8 +78,8 @@ class CameraSlider: UIControl {
         
         UIView.animate(withDuration: 0.1, animations: { [weak self] in
             guard self != nil else { return }
-            if point.x > 0 && point.x < self!.frame.width {
-                self!.thumb.frame.origin = CGPoint(x: point.x, y: -15.5)
+            if point.x > 0 && point.x < self!.frame.width - self!.thumbSizeValue {
+                self!.thumb.frame.origin = CGPoint(x: point.x, y: self!.thumbY)
             }
         }) { (completion) in
             

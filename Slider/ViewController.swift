@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         cameraSlider.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         cameraSlider.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         cameraSlider.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1, constant: -16).isActive = true
-        cameraSlider.heightAnchor.constraint(equalToConstant: 5).isActive = true
+        cameraSlider.heightAnchor.constraint(equalToConstant: 35).isActive = true
         
         
         cameraSlider.backgroundColor = .red
