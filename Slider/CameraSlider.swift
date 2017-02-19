@@ -70,7 +70,7 @@ class CameraSlider: UIControl {
         guard touch != nil else { return }
         animation(touch!)
     }
-    
+        
     // MARK: - Animation
     
     private func animation(_ touch: UITouch) {
