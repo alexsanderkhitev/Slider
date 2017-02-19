@@ -134,7 +134,7 @@ class CameraSlider: UIControl {
                 
                 self!.minumTrackView.frame.size = CGSize(width: X, height: self!.trackHeight)
                 
-                let maxWidth = self!.frame.width - point.x + self!.thumbSizeValue - 42.5
+                let maxWidth = self!.frame.width - X + self!.thumbSizeValue - 42.5
                 self!.maximumTrackView.frame = CGRect(x: X + self!.thumbSizeValue - self!.underThumbValue, y: self!.trackY, width: maxWidth, height: self!.trackHeight)
             }
         }) { (completion) in
