@@ -15,10 +15,14 @@ class CameraSlider: UIControl {
     // MARK: - Position's values
     fileprivate let thumbSizeValue: CGFloat = 20
     fileprivate let thumbY: CGFloat = 7.5
+    fileprivate let minumTrackView = TrackView(frame: .zero)
+    fileprivate let maximumTrackView = TrackView(frame: .zero)
+    fileprivate let trackY: CGFloat = 7.5 + 5
+
     
     // MARK: - UI Elements
     
-    fileprivate let thumb = UIView(frame: .zero)
+    fileprivate let thumb = ThumbView(frame: .zero)//UIView(frame: .zero)
     
     // MARK: - lifecycle 
     
@@ -32,8 +36,16 @@ class CameraSlider: UIControl {
     
     private func addUIElements() {
         let mainScreenBounds = UIScreen.main.bounds
-        thumb.frame = CGRect(x: mainScreenBounds.width / 2 - 18, y: thumbY, width: thumbSizeValue, height: thumbSizeValue)
+        
+        let thumbX = mainScreenBounds.width / 2 - thumbSizeValue / 2
+        thumb.frame = CGRect(x: thumbX, y: thumbY, width: thumbSizeValue, height: thumbSizeValue)
         addSubview(thumb)
+        
+        
+        minumTrackView.frame = CGRect(x: 0, y: trackY, width: thumbX, height: 10)
+        minumTrackView.backgroundColor = .gray
+        
+        addSubview(minumTrackView)
     }
     
     private func setupViewsSettings() {
@@ -70,7 +82,7 @@ class CameraSlider: UIControl {
         guard touch != nil else { return }
         animation(touch!)
     }
-        
+    
     // MARK: - Animation
     
     private func animation(_ touch: UITouch) {
@@ -84,6 +96,22 @@ class CameraSlider: UIControl {
         }) { (completion) in
             
         }
+    }
+    
+}
+
+fileprivate class ThumbView: UIView {
+    
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        return false
+    }
+    
+}
+
+fileprivate class TrackView: UIView {
+    
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        return false
     }
     
 }
