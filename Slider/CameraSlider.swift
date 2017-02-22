@@ -43,8 +43,6 @@ class CameraSlider: UIControl {
     // MARK: - UI
     
     private func addUIElements() {
-        let mainScreenBounds = UIScreen.main.bounds
-        
         thumb.translatesAutoresizingMaskIntoConstraints = false
         addSubview(thumb)
         thumb.layer.zPosition = 1
@@ -119,8 +117,6 @@ class CameraSlider: UIControl {
             guard self != nil else { return }
             
             if point.x > 0 && point.x < self!.frame.width - self!.thumbSizeValue {
-
-                
                 self!.trackView.maxX = point.x + self!.thumbSizeValue
                 self!.trackView.maxWidth =  UIScreen.main.bounds.width - 30 - self!.thumbSizeValue - point.x - 2
                 self!.trackView.minWidth = point.x + 2 - self!.thumbSizeValue / 2
@@ -129,7 +125,6 @@ class CameraSlider: UIControl {
                 
                 return
             }
-  
         }) { (completion) in
             
         }
