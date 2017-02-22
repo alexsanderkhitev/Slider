@@ -125,19 +125,24 @@ class CameraSlider: UIControl {
             guard self != nil else { return }
             
             if point.x > 0 && point.x < self!.frame.width - self!.thumbSizeValue {
-                if point.x + self!.thumbSizeValue >= self!.frame.width {
-                    debugPrint("0")
-                    self!.maximumTrackRightConstraint.constant = 0
-                } else {
-                    self!.maximumTrackRightConstraint.constant = -10
-                    debugPrint("- 10")
+                
+                self!.maximumTrackRightConstraint.constant = -10
 
-                }
                 
                 self!.thumbXConstraint.constant = point.x
                 
                 return
             }
+            
+            if point.x > 0 {
+              
+                self!.maximumTrackRightConstraint.constant = 0
+                self!.thumbXConstraint.constant = point.x
+                
+                return
+            }
+            
+            
             
             if point.x < 0 {
               
