@@ -20,7 +20,6 @@ class ViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         setupUIElementsPositions()
-        view.backgroundColor = .green
     }
     
     private func addUISlider() {
