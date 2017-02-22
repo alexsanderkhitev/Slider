@@ -13,7 +13,7 @@ class CameraSlider: UIControl {
     // 35 height
     
     // MARK: - Position's values
-    fileprivate let thumbSizeValue: CGFloat = 20
+    fileprivate let thumbSizeValue: CGFloat = 25
     fileprivate let thumbY: CGFloat = 7.5
     fileprivate let trackY: CGFloat = 7.5 + 5
 
@@ -79,10 +79,7 @@ class CameraSlider: UIControl {
         // tracks 
         
         trackView.backgroundColor = .clear
-        
-        backgroundColor = .red
-        
-        
+
         
         trackView.maxX = thumbSizeValue
         trackView.maxWidth = UIScreen.main.bounds.width - 30 - thumbSizeValue
@@ -90,7 +87,6 @@ class CameraSlider: UIControl {
         trackView.setNeedsDisplay()
         trackView.layer.cornerRadius = 5
         trackView.layer.masksToBounds = true
-        
     }
     
     // MARK: - Delegates
@@ -151,6 +147,10 @@ fileprivate class ThumbView: UIView {
 
 fileprivate class TrackView: UIView {
     
+    // MARK: - Flags
+    
+    private var isFirstCall = true
+    
     // MARK: - values
     
     var minWidth: CGFloat = 0
@@ -163,13 +163,17 @@ fileprivate class TrackView: UIView {
 
     override func draw(_ rect: CGRect) {
         super.draw(rect)
+        if !isFirstCall {
+            minWidth += 2
+        }
+        isFirstCall = false 
+        let color = UIColor.gray.withAlphaComponent(0.3).cgColor
         guard let  minContext = UIGraphicsGetCurrentContext() else { return }
-        minContext.setFillColor(UIColor.gray.cgColor)
+        minContext.setFillColor(color)
         minContext.fill(CGRect(x: 0, y: 0, width: minWidth, height: 10))
         
         guard let  maxContext = UIGraphicsGetCurrentContext() else { return }
-        maxContext.setFillColor(UIColor.gray.cgColor)
-        debugPrint("maxWidth", maxX)
+        maxContext.setFillColor(color)
         maxX = maxX - 10 - 2
         maxContext.fill(CGRect(x: maxX, y: 0, width: maxWidth, height: 10))
     }
