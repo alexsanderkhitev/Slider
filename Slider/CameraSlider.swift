@@ -136,7 +136,7 @@ class CameraSlider: UIControl {
             
             if point.x > 0 {
               
-                self!.maximumTrackRightConstraint.constant = 0
+                self!.maximumTrackRightConstraint.constant = -10
                 self!.thumbXConstraint.constant = point.x
                 
                 return
