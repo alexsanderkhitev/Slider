@@ -27,6 +27,11 @@ class CameraSlider: UIControl {
     fileprivate let minumTrackView = TrackView(frame: .zero)
     fileprivate let maximumTrackView = TrackView(frame: .zero)
     
+    // MARK: - Constraints 
+    
+    fileprivate var thumbXConstraint: NSLayoutConstraint!
+    fileprivate var maximumTrackRightConstraint: NSLayoutConstraint!
+    
     // MARK: - lifecycle 
     
     override func willMove(toSuperview newSuperview: UIView?) {
@@ -41,32 +46,35 @@ class CameraSlider: UIControl {
         let mainScreenBounds = UIScreen.main.bounds
         
         // MARK: - warning minus value from main screen width
-        let thumbX = (mainScreenBounds.width - 30) / 2 - thumbSizeValue / 2
-        thumb.frame = CGRect(x: thumbX, y: thumbY, width: thumbSizeValue, height: thumbSizeValue)
-        addSubview(thumb)
         
+        thumb.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(thumb)
         thumb.layer.zPosition = 1
         
-        /// width + 1 because it will be under thumb
-        minumTrackView.frame = CGRect(x: 0, y: trackY, width: thumbX + underThumbValue, height: trackHeight)
-        minumTrackView.backgroundColor = .gray
-        
+        minumTrackView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(minumTrackView)
         minumTrackView.layer.zPosition = 0
         
-        addSubview(minumTrackView)
-        
-        maximumTrackView.layer.zPosition = 0
-        maximumTrackView.frame = CGRect(x: thumbX + thumbSizeValue - underThumbValue, y: trackY, width: thumbX, height: trackHeight)
-        maximumTrackView.backgroundColor = .gray
-        
+        maximumTrackView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(maximumTrackView)
+        maximumTrackView.layer.zPosition = 0
         
-        // corner
-//        minumTrackView.roundCorners(corners: [.bottomLeft, .topLeft], radius: 5) // trackHeight / 2 = 5
-//        maximumTrackView.roundCorners(corners: [.topRight, .bottomRight], radius: 5)
-//        
-//        minumTrackView.layer.masksToBounds = true
-//        maximumTrackView.layer.masksToBounds = true
+        
+        thumb.widthAnchor.constraint(equalToConstant: thumbSizeValue).isActive = true
+        thumb.heightAnchor.constraint(equalToConstant: thumbSizeValue).isActive = true
+        thumb.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        
+        thumbXConstraint = thumb.leftAnchor.constraint(equalTo: leftAnchor, constant: (mainScreenBounds.width - 30) / 2 - thumbSizeValue / 2)
+        thumbXConstraint.isActive = true
+        
+        maximumTrackView.heightAnchor.constraint(equalToConstant: trackHeight).isActive = true
+        maximumTrackView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        
+        
+        maximumTrackRightConstraint = maximumTrackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -10)
+        maximumTrackRightConstraint.isActive = true
+        
+        maximumTrackView.leftAnchor.constraint(equalTo: thumb.rightAnchor, constant: -2).isActive = true
     }
     
     private func setupViewsSettings() {
@@ -76,6 +84,13 @@ class CameraSlider: UIControl {
         thumb.layer.masksToBounds = true
         thumb.layer.borderColor = UIColor.yellow.cgColor
         thumb.layer.borderWidth = 2
+        
+        
+        // tracks 
+        
+        maximumTrackView.backgroundColor = .gray
+        
+        backgroundColor = .red
     }
     
     // MARK: - Delegates
@@ -90,7 +105,6 @@ class CameraSlider: UIControl {
     override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         super.continueTracking(touch, with: event)
         
-        let point = touch.location(in: self)
         animation(touch)
         
         return true
@@ -109,33 +123,24 @@ class CameraSlider: UIControl {
         
         UIView.animate(withDuration: 0.1, animations: { [weak self] in
             guard self != nil else { return }
+            
             if point.x > 0 && point.x < self!.frame.width - self!.thumbSizeValue {
-                self!.thumb.frame.origin = CGPoint(x: point.x, y: self!.thumbY)
-                
-                // frame 
-                
-                self!.minumTrackView.frame.size = CGSize(width: point.x + self!.underThumbValue, height:self!.trackHeight)
-                
-                let maxWidth = self!.frame.width - point.x + self!.thumbSizeValue - 42.5
-                
-                // TODO: - need to find 42.5
-                self!.maximumTrackView.frame = CGRect(x: point.x + self!.thumbSizeValue - self!.underThumbValue, y: self!.trackY, width: maxWidth, height: self!.trackHeight)
-                
-                
-                if point.x + self!.thumbSizeValue + CGFloat(2) == self!.frame.width {
-                    debugPrint("here")
+                if point.x + self!.thumbSizeValue >= self!.frame.width {
+                    debugPrint("0")
+                    self!.maximumTrackRightConstraint.constant = 0
+                } else {
+                    self!.maximumTrackRightConstraint.constant = -10
+                    debugPrint("- 10")
+
                 }
                 
-            } else if point.x < 0 {
-                let X: CGFloat = 0
-                self!.thumb.frame.origin = CGPoint(x: X, y: self!.thumbY)
+                self!.thumbXConstraint.constant = point.x
                 
-                // frame
-                
-                self!.minumTrackView.frame.size = CGSize(width: X, height: self!.trackHeight)
-                
-                let maxWidth = self!.frame.width - X + self!.thumbSizeValue - 42.5
-                self!.maximumTrackView.frame = CGRect(x: X + self!.thumbSizeValue - self!.underThumbValue, y: self!.trackY, width: maxWidth, height: self!.trackHeight)
+                return
+            }
+            
+            if point.x < 0 {
+              
             }
         }) { (completion) in
             
