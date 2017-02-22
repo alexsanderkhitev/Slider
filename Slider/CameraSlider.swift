@@ -10,13 +10,28 @@ import UIKit
 
 class CameraSlider: UIControl {
     
-    // 35 height
+    // MARK: - Delegates
+    
+    weak var delegate: CameraSliderDelegate?
+    
+    // MARK: - Data
+    
+    var minumValue: CGFloat = 0
+    var maximumValue: CGFloat = 0
+    
+    var value: CGFloat = 1 {
+        didSet {
+            debugPrint("DidSet", value)
+            // call animation
+            animationByValue(value)
+        }
+    }
     
     // MARK: - Position's values
     fileprivate let thumbSizeValue: CGFloat = 25
     fileprivate let thumbY: CGFloat = 7.5
     fileprivate let trackY: CGFloat = 7.5 + 5
-
+    
     fileprivate let trackHeight: CGFloat = 10
     
     fileprivate let underThumbValue: CGFloat = 2
@@ -26,19 +41,23 @@ class CameraSlider: UIControl {
     fileprivate let thumb = ThumbView(frame: .zero)
     fileprivate let trackView = TrackView(frame: .zero)
     
-    // MARK: - Constraints 
+    // MARK: - Constraints
     
     fileprivate var thumbXConstraint: NSLayoutConstraint!
     fileprivate var maximumTrackRightConstraint: NSLayoutConstraint!
     
-    // MARK: - lifecycle 
+    // MARK: - Hidding
+    
+    private var timer: Timer!
+    
+    // MARK: - lifecycle
     
     override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
         addUIElements()
         setupViewsSettings()
     }
-
+    
     
     // MARK: - UI
     
@@ -46,7 +65,7 @@ class CameraSlider: UIControl {
         thumb.translatesAutoresizingMaskIntoConstraints = false
         addSubview(thumb)
         thumb.layer.zPosition = 1
-  
+        
         trackView.translatesAutoresizingMaskIntoConstraints = false
         thumb.addSubview(trackView)
         trackView.layer.zPosition = 0
@@ -74,10 +93,10 @@ class CameraSlider: UIControl {
         thumb.layer.borderColor = UIColor.yellow.cgColor
         thumb.layer.borderWidth = 2
         
-        // tracks 
+        // tracks
         
         trackView.backgroundColor = .clear
-
+        
         
         trackView.maxX = thumbSizeValue
         trackView.maxWidth = UIScreen.main.bounds.width - 30 - thumbSizeValue
@@ -92,7 +111,7 @@ class CameraSlider: UIControl {
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         super.beginTracking(touch, with: event)
         animation(touch)
-
+        
         return true
     }
     
@@ -116,19 +135,83 @@ class CameraSlider: UIControl {
         UIView.animate(withDuration: 0.1, animations: { [weak self] in
             guard self != nil else { return }
             
+            // stop timer
+            self!.stopHiddingTimer()
+            
             if point.x > 0 && point.x < self!.frame.width - self!.thumbSizeValue {
+                
                 self!.trackView.maxX = point.x + self!.thumbSizeValue
                 self!.trackView.maxWidth =  UIScreen.main.bounds.width - 30 - self!.thumbSizeValue - point.x - 2
                 self!.trackView.minWidth = point.x + 2 - self!.thumbSizeValue / 2
                 self!.trackView.setNeedsDisplay()
                 self!.thumbXConstraint.constant = point.x
                 
-                return
+                self!.changeValue(point.x)
+                
+                // hidding timer
+                self?.startHiddingTimer()
             }
         }) { (completion) in
             
         }
     }
+    
+    private func animationByValue(_ currentValue: CGFloat) {
+        let onePercentFrame = (bounds.width - thumbSizeValue) / 100
+        let oneValuePercent = (maximumValue - minumValue) / 100
+        let currentPercents = currentValue / oneValuePercent - 25 // because minus 1 / 4
+        let X = currentPercents * onePercentFrame
+        
+        UIView.animate(withDuration: 0.1, animations: { [weak self] in
+            guard self != nil else { return }
+            // stop timer
+            self!.stopHiddingTimer()
+            
+            let checkValue = self!.bounds.width - self!.thumbSizeValue
+            debugPrint("X", X, "checkValue", checkValue)
+            
+            if X <= checkValue  {
+                self!.trackView.maxX = X + self!.thumbSizeValue
+                self!.trackView.maxWidth =  UIScreen.main.bounds.width - 30 - self!.thumbSizeValue - X - 2
+                self!.trackView.minWidth = X + 2 - self!.thumbSizeValue / 2
+                self!.trackView.setNeedsDisplay()
+                self!.thumbXConstraint.constant = X
+                // hidding timer
+                self?.startHiddingTimer()
+            } else {
+                debugPrint("animation NOT perfrom")
+            }
+        }) { (completion) in
+            
+        }
+    }
+    
+    private func changeValue(_ pointX: CGFloat) {
+        let onePercentFrame = (bounds.width - thumbSizeValue) / 100
+        let oneValuePercent = (maximumValue - minumValue) / 100
+        let frameValueMultipler = pointX / onePercentFrame
+        let result = oneValuePercent * frameValueMultipler + minumValue
+        delegate?.didChangeValue?(result)
+    }
+    
+    // MARK: - Hidding functions
+    
+    private func startHiddingTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { [weak self] (timer) in
+            self?.hide()
+        })
+    }
+    
+    private func stopHiddingTimer() {
+        if timer != nil {
+            timer.invalidate()
+        }
+    }
+    
+    @objc private func hide() {
+        isHidden = true
+    }
+    
     
 }
 
@@ -155,13 +238,13 @@ fileprivate class TrackView: UIView {
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         return false
     }
-
+    
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         if !isFirstCall {
             minWidth += 2
         }
-        isFirstCall = false 
+        isFirstCall = false
         let color = UIColor.gray.withAlphaComponent(0.3).cgColor
         guard let  minContext = UIGraphicsGetCurrentContext() else { return }
         minContext.setFillColor(color)
@@ -171,17 +254,6 @@ fileprivate class TrackView: UIView {
         maxContext.setFillColor(color)
         maxX = maxX - 10 - 2
         maxContext.fill(CGRect(x: maxX, y: 0, width: maxWidth, height: 10))
-    }
-    
-}
-
-extension UIView {
-    
-    func roundCorners(corners: UIRectCorner, radius: CGFloat) {
-        let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-        let mask = CAShapeLayer()
-        mask.path = path.cgPath
-        self.layer.mask = mask
     }
     
 }

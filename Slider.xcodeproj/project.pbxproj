@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A647BC451E5E3D9400DA4E69 /* CameraSliderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A647BC441E5E3D9400DA4E69 /* CameraSliderDelegate.swift */; };
 		A6EA47D01E585DA1005DD0A2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6EA47CF1E585DA1005DD0A2 /* AppDelegate.swift */; };
 		A6EA47D21E585DA1005DD0A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6EA47D11E585DA1005DD0A2 /* ViewController.swift */; };
 		A6EA47D51E585DA1005DD0A2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A6EA47D31E585DA1005DD0A2 /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A647BC441E5E3D9400DA4E69 /* CameraSliderDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraSliderDelegate.swift; sourceTree = "<group>"; };
 		A6EA47CC1E585DA1005DD0A2 /* Slider.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Slider.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6EA47CF1E585DA1005DD0A2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A6EA47D11E585DA1005DD0A2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 			children = (
 				A6EA47CF1E585DA1005DD0A2 /* AppDelegate.swift */,
 				A6EA47D11E585DA1005DD0A2 /* ViewController.swift */,
+				A647BC441E5E3D9400DA4E69 /* CameraSliderDelegate.swift */,
 				A6EA47E11E585F7B005DD0A2 /* CameraSlider.swift */,
 				A6EA47D31E585DA1005DD0A2 /* Main.storyboard */,
 				A6EA47D61E585DA1005DD0A2 /* Assets.xcassets */,
@@ -147,6 +150,7 @@
 				A6EA47D21E585DA1005DD0A2 /* ViewController.swift in Sources */,
 				A6EA47D01E585DA1005DD0A2 /* AppDelegate.swift in Sources */,
 				A6EA47E41E58811E005DD0A2 /* UIImageExtension.swift in Sources */,
+				A647BC451E5E3D9400DA4E69 /* CameraSliderDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
