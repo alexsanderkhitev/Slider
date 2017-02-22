@@ -24,8 +24,7 @@ class CameraSlider: UIControl {
     // MARK: - UI Elements
     
     fileprivate let thumb = ThumbView(frame: .zero)
-    fileprivate let minumTrackView = TrackView(frame: .zero)
-    fileprivate let maximumTrackView = TrackView(frame: .zero)
+    fileprivate let trackView = TrackView(frame: .zero)
     
     // MARK: - Constraints 
     
@@ -39,36 +38,34 @@ class CameraSlider: UIControl {
         addUIElements()
         setupViewsSettings()
     }
+
     
-    // MARK: - UI 
+    // MARK: - UI
     
     private func addUIElements() {
         let mainScreenBounds = UIScreen.main.bounds
         
         thumb.translatesAutoresizingMaskIntoConstraints = false
         addSubview(thumb)
-        thumb.layer.zPosition = 0
+        thumb.layer.zPosition = 1
   
-        maximumTrackView.translatesAutoresizingMaskIntoConstraints = false
-        thumb.addSubview(maximumTrackView)
-        maximumTrackView.layer.zPosition = 1
-        
+        trackView.translatesAutoresizingMaskIntoConstraints = false
+        thumb.addSubview(trackView)
+        trackView.layer.zPosition = 0
         
         thumb.widthAnchor.constraint(equalToConstant: thumbSizeValue).isActive = true
         thumb.heightAnchor.constraint(equalToConstant: thumbSizeValue).isActive = true
         thumb.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         
-        thumbXConstraint = thumb.leftAnchor.constraint(equalTo: leftAnchor, constant: (mainScreenBounds.width - 30) / 2 - thumbSizeValue / 2)
+        thumbXConstraint = thumb.leftAnchor.constraint(equalTo: leftAnchor, constant: 0)
         thumbXConstraint.isActive = true
         
         
-        
-        
-        maximumTrackView.heightAnchor.constraint(equalToConstant: trackHeight).isActive = true
-        maximumTrackView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        maximumTrackRightConstraint = maximumTrackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -10)
+        trackView.heightAnchor.constraint(equalToConstant: trackHeight).isActive = true
+        trackView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        maximumTrackRightConstraint = trackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -10)
         maximumTrackRightConstraint.isActive = true
-        maximumTrackView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10).isActive = true
+        trackView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10).isActive = true
     }
     
     private func setupViewsSettings() {
@@ -81,9 +78,19 @@ class CameraSlider: UIControl {
         
         // tracks 
         
-        maximumTrackView.backgroundColor = .gray
+        trackView.backgroundColor = .clear
         
         backgroundColor = .red
+        
+        
+        
+        trackView.maxX = thumbSizeValue
+        trackView.maxWidth = UIScreen.main.bounds.width - 30 - thumbSizeValue
+        trackView.minWidth = 0
+        trackView.setNeedsDisplay()
+        trackView.layer.cornerRadius = 5
+        trackView.layer.masksToBounds = true
+        
     }
     
     // MARK: - Delegates
@@ -116,23 +123,17 @@ class CameraSlider: UIControl {
             guard self != nil else { return }
             
             if point.x > 0 && point.x < self!.frame.width - self!.thumbSizeValue {
-//                if point.x + self!.thumbSizeValue >= self!.frame.width {
-//                    debugPrint("0")
-//                    self!.maximumTrackRightConstraint.constant = 0
-//                } else {
-//                    self!.maximumTrackRightConstraint.constant = -10
-//                    debugPrint("- 10")
-//
-//                }
+
                 
+                self!.trackView.maxX = point.x + self!.thumbSizeValue
+                self!.trackView.maxWidth =  UIScreen.main.bounds.width - 30 - self!.thumbSizeValue - point.x - 2
+                self!.trackView.minWidth = point.x + 2 - self!.thumbSizeValue / 2
+                self!.trackView.setNeedsDisplay()
                 self!.thumbXConstraint.constant = point.x
                 
                 return
             }
-            
-            if point.x < 0 {
-              
-            }
+  
         }) { (completion) in
             
         }
@@ -150,8 +151,27 @@ fileprivate class ThumbView: UIView {
 
 fileprivate class TrackView: UIView {
     
+    // MARK: - values
+    
+    var minWidth: CGFloat = 0
+    var maxX: CGFloat = 0
+    var maxWidth: CGFloat = 0
+    
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         return false
+    }
+
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        guard let  minContext = UIGraphicsGetCurrentContext() else { return }
+        minContext.setFillColor(UIColor.gray.cgColor)
+        minContext.fill(CGRect(x: 0, y: 0, width: minWidth, height: 10))
+        
+        guard let  maxContext = UIGraphicsGetCurrentContext() else { return }
+        maxContext.setFillColor(UIColor.gray.cgColor)
+        debugPrint("maxWidth", maxX)
+        maxX = maxX - 10 - 2
+        maxContext.fill(CGRect(x: maxX, y: 0, width: maxWidth, height: 10))
     }
     
 }
