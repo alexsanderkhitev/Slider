@@ -23,7 +23,7 @@ class CameraSlider: UIControl {
     
     // MARK: - UI Elements
     
-    fileprivate let thumb = ThumbView(frame: .zero)//UIView(frame: .zero)
+    fileprivate let thumb = ThumbView(frame: .zero)
     fileprivate let minumTrackView = TrackView(frame: .zero)
     fileprivate let maximumTrackView = TrackView(frame: .zero)
     
@@ -45,19 +45,13 @@ class CameraSlider: UIControl {
     private func addUIElements() {
         let mainScreenBounds = UIScreen.main.bounds
         
-        // MARK: - warning minus value from main screen width
-        
         thumb.translatesAutoresizingMaskIntoConstraints = false
         addSubview(thumb)
-        thumb.layer.zPosition = 1
-        
-        minumTrackView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(minumTrackView)
-        minumTrackView.layer.zPosition = 0
-        
+        thumb.layer.zPosition = 0
+  
         maximumTrackView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(maximumTrackView)
-        maximumTrackView.layer.zPosition = 0
+        thumb.addSubview(maximumTrackView)
+        maximumTrackView.layer.zPosition = 1
         
         
         thumb.widthAnchor.constraint(equalToConstant: thumbSizeValue).isActive = true
@@ -67,24 +61,23 @@ class CameraSlider: UIControl {
         thumbXConstraint = thumb.leftAnchor.constraint(equalTo: leftAnchor, constant: (mainScreenBounds.width - 30) / 2 - thumbSizeValue / 2)
         thumbXConstraint.isActive = true
         
+        
+        
+        
         maximumTrackView.heightAnchor.constraint(equalToConstant: trackHeight).isActive = true
         maximumTrackView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        
-        
         maximumTrackRightConstraint = maximumTrackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -10)
         maximumTrackRightConstraint.isActive = true
-        
-        maximumTrackView.leftAnchor.constraint(equalTo: thumb.rightAnchor, constant: -2).isActive = true
+        maximumTrackView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10).isActive = true
     }
     
     private func setupViewsSettings() {
         thumb.backgroundColor = .clear
         thumb.isUserInteractionEnabled = true
         thumb.layer.cornerRadius = thumbSizeValue / 2
-        thumb.layer.masksToBounds = true
+        thumb.layer.masksToBounds = false
         thumb.layer.borderColor = UIColor.yellow.cgColor
         thumb.layer.borderWidth = 2
-        
         
         // tracks 
         
@@ -104,9 +97,7 @@ class CameraSlider: UIControl {
     
     override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         super.continueTracking(touch, with: event)
-        
         animation(touch)
-        
         return true
     }
     
@@ -125,14 +116,14 @@ class CameraSlider: UIControl {
             guard self != nil else { return }
             
             if point.x > 0 && point.x < self!.frame.width - self!.thumbSizeValue {
-                if point.x + self!.thumbSizeValue >= self!.frame.width {
-                    debugPrint("0")
-                    self!.maximumTrackRightConstraint.constant = 0
-                } else {
-                    self!.maximumTrackRightConstraint.constant = -10
-                    debugPrint("- 10")
-
-                }
+//                if point.x + self!.thumbSizeValue >= self!.frame.width {
+//                    debugPrint("0")
+//                    self!.maximumTrackRightConstraint.constant = 0
+//                } else {
+//                    self!.maximumTrackRightConstraint.constant = -10
+//                    debugPrint("- 10")
+//
+//                }
                 
                 self!.thumbXConstraint.constant = point.x
                 
