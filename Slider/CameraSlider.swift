@@ -212,7 +212,6 @@ class CameraSlider: UIControl {
         isHidden = true
     }
     
-    
 }
 
 fileprivate class ThumbView: UIView {
